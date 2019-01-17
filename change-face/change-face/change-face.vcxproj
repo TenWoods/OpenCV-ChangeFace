@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\WorkPlace\Library\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\石木\Downloads\opencv\build\include\opencv2;C:\WorkPlace\Library\opencv\build\include;C:\WorkPlace\Library\opencv\build\include\opencv2;$(IncludePath)</IncludePath>
     <LibraryPath>C:\WorkPlace\Library\opencv\build\x64\vc15\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -121,6 +121,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Histogram1D.hpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
