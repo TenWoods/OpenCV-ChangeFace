@@ -61,22 +61,49 @@ int main()
 	
 	//创建遮罩
 	Mat mask = Mat::zeros(img.rows, img.cols, CV_8UC3);
-	Mat mask_turn;
+	Mat src = Mat::zeros(img.rows, img.cols, CV_8UC3);
 	Mat white = Mat::zeros(faces_2[0].width, faces_2[0].height, CV_8UC3);
 	white.setTo(Scalar(256, 256, 256));
 	Rect roi_rect(faces_2[0].x, faces_2[0].y, faces_2[0].width, faces_2[0].height);
 	white.copyTo(mask(roi_rect));
+	target_roi.copyTo(src(roi_rect));
+
+	//边界融合
+	Mat result = Mat::zeros(img.rows, img.cols, CV_8UC3);
+	Point center(faces_2[0].x + (int)(faces_2[0].width / 2), faces_2[0].y + (int)(faces_2[0].height / 2));
+	seamlessClone(src, img, mask, center, result, NORMAL_CLONE);
+
+	//高斯模糊
+	GaussianBlur(img, img, Size(5, 5), 0);
 
 	//抠出区域
-	bitwise_not(mask, mask_turn);
+	/*bitwise_not(mask, mask_turn);
 	bitwise_and(img, mask_turn, img);
 	target_roi.copyTo(mask(roi_rect));
 	add(mask, img, img);
+	GaussianBlur(img, img, Size(9, 9), 1);*/
 	//imshow("mask", mask);
 
-	//imshow("target", target);
+	int c = 0;
+	
+	imshow("target", target);
 	imshow("ori", img);
-	waitKey(0);
+	imshow("res", result);
+	while (c != 27)
+	{
+		c = waitKey(1);
+		if (c == 102)
+		{
+			flip(target_roi, target_roi, 1);
+			target_roi.copyTo(src(roi_rect));
+			seamlessClone(src, img, mask, center, result, NORMAL_CLONE);
+			imshow("target", target);
+			imshow("ori", img);
+			imshow("res", result);
+		
+		}
+	}
+	imwrite("output.jpg", result);
 	return 0;
 }
 
@@ -84,7 +111,7 @@ int main()
 vector<Rect> DetectFace(Mat target)
 {
 	CascadeClassifier faceCascade;
-	faceCascade.load("C:\\WorkPlace\\Library\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml");
+	faceCascade.load("haarcascade_frontalface_alt.xml");
 	vector<Rect> faces;
 	faceCascade.detectMultiScale(target, faces, 1.2, 6, 0, Size(0, 0));
 	return faces;
